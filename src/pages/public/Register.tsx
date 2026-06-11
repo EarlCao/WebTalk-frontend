@@ -93,8 +93,13 @@ export const RegisterPage = () => {
     <div className={`auth-page-root${leaving ? " leaving" : ""}`}>
       {/* ── Header ──────────────────────────────────────────────── */}
       <div>
-        <h1 className="text-2xl font-semibold">Create your account</h1>
-        <p className="mt-1 text-sm text-base-content/60">It only takes a moment.</p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/5 shadow-inner ring-1 ring-base-content/10 overflow-hidden">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+          </div>
+          <h1 className="text-2xl font-semibold">Create your account</h1>
+        </div>
+        <p className="mt-2 text-sm text-base-content/60">It only takes a moment.</p>
       </div>
 
       {/* ── Form card ───────────────────────────────────────────── */}

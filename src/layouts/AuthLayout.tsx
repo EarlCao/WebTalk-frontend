@@ -272,16 +272,6 @@ export const AuthLayout = () => {
 
         {/* Form content */}
         <div className="w-full max-w-sm">
-          {/* Mobile-only brand */}
-          <Link
-            to="/"
-            className="font-display mb-8 inline-flex items-center gap-2 text-xl font-semibold tracking-tight lg:hidden"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
-            </div>
-            web<span className="text-primary">talk</span>
-          </Link>
           <Outlet />
         </div>
       </div>
