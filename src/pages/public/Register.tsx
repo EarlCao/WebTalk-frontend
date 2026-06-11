@@ -57,6 +57,7 @@ export const RegisterPage = () => {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
   /* ── Animated navigation ──────────────────────────────────────── */
   const handleNavigate = (to: string) => {
@@ -73,17 +74,16 @@ export const RegisterPage = () => {
     if (Object.keys(errors).length > 0) return;
 
     setIsSubmitting(true);
+    setFormError("");
 
     try {
       await register({ username, email, password });
       toast.success(`Account created! Welcome, ${username} 🎉`, 5000);
       navigate("/", { replace: true });
     } catch (caughtError) {
-      toast.error(
-        caughtError instanceof Error
-          ? caughtError.message
-          : "Unable to create your account. Please try again.",
-      );
+      const msg = caughtError instanceof Error ? caughtError.message : "Unable to create your account. Please try again.";
+      toast.error(msg);
+      setFormError(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -157,6 +157,12 @@ export const RegisterPage = () => {
             {isSubmitting && <span className="loading loading-spinner loading-sm" />}
             Create account
           </button>
+
+          {formError && (
+            <div className="mt-2 text-center text-sm font-medium text-error lg:hidden">
+              {formError}
+            </div>
+          )}
         </form>
       </div>
 

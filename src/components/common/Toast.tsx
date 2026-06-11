@@ -115,7 +115,7 @@ export const ToastContainer = () => {
   return (
     <div
       aria-label="Notifications"
-      className="fixed right-4 top-4 z-[9999] flex flex-col gap-2.5"
+      className="fixed right-4 top-4 z-[9999] hidden lg:flex flex-col gap-2.5"
     >
       {toasts.map((t) => (
         <ToastCard key={t.id} toast={t} />

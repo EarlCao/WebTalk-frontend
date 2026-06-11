@@ -14,6 +14,7 @@ export const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
   /* ── Animated navigation ──────────────────────────────────────── */
   const handleNavigate = (to: string) => {
@@ -29,6 +30,7 @@ export const LoginPage = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
+    setFormError("");
 
     try {
       await login({ email, password });
@@ -36,9 +38,9 @@ export const LoginPage = () => {
       toast.success(`Welcome back, ${name}! 👋`);
       navigate("/", { replace: true });
     } catch (caughtError) {
-      toast.error(
-        caughtError instanceof Error ? caughtError.message : "Unable to sign in. Please try again.",
-      );
+      const msg = caughtError instanceof Error ? caughtError.message : "Unable to sign in. Please try again.";
+      toast.error(msg);
+      setFormError(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,6 +101,12 @@ export const LoginPage = () => {
             {isSubmitting && <span className="loading loading-spinner loading-sm" />}
             Sign in
           </button>
+
+          {formError && (
+            <div className="mt-2 text-center text-sm font-medium text-error lg:hidden">
+              {formError}
+            </div>
+          )}
         </form>
       </div>
 
