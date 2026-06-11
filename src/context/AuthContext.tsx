@@ -36,7 +36,11 @@ const readStoredUser = (): User | null => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_STORAGE_KEY));
   const [user, setUser] = useState<User | null>(() => readStoredUser());
-  const [isInitializing, setIsInitializing] = useState(true);
+  // The session is read synchronously from localStorage above, so there's
+  // no async "loading" phase yet. Kept as `false`/state (rather than a
+  // plain constant) so a future async check (e.g. verifying the token with
+  // the backend) can flip it without changing the AuthContext shape.
+  const [isInitializing] = useState(false);
 
   const persistSession = useCallback((data: AuthResponse) => {
     localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
@@ -65,7 +69,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         persistSession(response.data.data);
       } catch (error) {
-        throw new Error(getApiErrorMessage(error, "Unable to log in. Check your credentials and try again."));
+        throw new Error(getApiErrorMessage(error, "Unable to log in. Check your credentials and try again."), {
+          cause: error,
+        });
       }
     },
     [persistSession],
@@ -82,7 +88,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         persistSession(response.data.data);
       } catch (error) {
-        throw new Error(getApiErrorMessage(error, "Unable to create your account. Please try again."));
+        throw new Error(getApiErrorMessage(error, "Unable to create your account. Please try again."), {
+          cause: error,
+        });
       }
     },
     [persistSession],
@@ -106,8 +114,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       connectSocket(token);
     }
-
-    setIsInitializing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
