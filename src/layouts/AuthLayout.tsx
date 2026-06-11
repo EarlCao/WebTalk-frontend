@@ -1,5 +1,20 @@
 import { Link, Outlet } from "react-router-dom";
 
+import { useTheme } from "../context/ThemeContext";
+
+/* ── Icons ───────────────────────────────────────────────────── */
+const IconSun = () => (
+  <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="4" />
+    <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </svg>
+);
+const IconMoon = () => (
+  <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+
 /* ── Feature list ────────────────────────────────────────────── */
 const FEATURES = [
   {
@@ -69,11 +84,9 @@ const PhoneMockup = () => (
       style={{ background: "#075E54" }}
     >
       <div className="flex items-center gap-2">
-        {/* Back arrow */}
         <svg width="12" height="12" fill="white" viewBox="0 0 24 24" className="opacity-80">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
-        {/* Avatar */}
         <div
           className="flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold text-white"
           style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}
@@ -101,12 +114,10 @@ const PhoneMockup = () => (
       style={{
         minHeight: 210,
         background: "#0B141A",
-        backgroundImage:
-          "radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 1px)",
+        backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 1px)",
         backgroundSize: "20px 20px",
       }}
     >
-      {/* Date chip */}
       <div className="mx-auto mb-1 rounded-full bg-white/[0.06] px-2.5 py-0.5 text-[9px] text-white/40">
         TODAY
       </div>
@@ -122,13 +133,10 @@ const PhoneMockup = () => (
           }}
         >
           <div
-            className="relative max-w-[76%] rounded-xl px-2.5 py-1.5 text-[11px] leading-snug"
+            className="relative max-w-[76%] px-2.5 py-1.5 text-[11px] leading-snug"
             style={{
               background: msg.from === "me" ? "#005C4B" : "#202C33",
-              borderRadius:
-                msg.from === "me"
-                  ? "12px 12px 3px 12px"
-                  : "12px 12px 12px 3px",
+              borderRadius: msg.from === "me" ? "12px 12px 3px 12px" : "12px 12px 12px 3px",
               color: msg.from === "me" ? "#E9EDEF" : "#D1D7DB",
             }}
           >
@@ -141,7 +149,6 @@ const PhoneMockup = () => (
         </div>
       ))}
 
-      {/* Typing indicator */}
       <div
         className="flex justify-start"
         style={{
@@ -162,11 +169,11 @@ const PhoneMockup = () => (
     </div>
 
     {/* ── Input bar ───────────────────────────────────────── */}
-    <div
-      className="flex items-center gap-2 px-3 py-2.5"
-      style={{ background: "#1F2C34" }}
-    >
-      <div className="flex-1 rounded-full px-3 py-1.5 text-[10px]" style={{ background: "#2A3942", color: "rgba(255,255,255,0.25)" }}>
+    <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "#1F2C34" }}>
+      <div
+        className="flex-1 rounded-full px-3 py-1.5 text-[10px]"
+        style={{ background: "#2A3942", color: "rgba(255,255,255,0.25)" }}
+      >
         Message…
       </div>
       <div
@@ -183,6 +190,8 @@ const PhoneMockup = () => (
 
 /* ── AuthLayout ───────────────────────────────────────────────── */
 export const AuthLayout = () => {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <div className="grid min-h-svh bg-base-100 text-base-content lg:grid-cols-2">
 
@@ -191,7 +200,7 @@ export const AuthLayout = () => {
       ════════════════════════════════════════════════════ */}
       <div className="auth-left-bg relative hidden overflow-hidden lg:flex flex-col">
 
-        {/* ── Brand ─────────────────────────────────────────── */}
+        {/* Brand */}
         <div className="relative z-10 flex items-center gap-2.5 px-9 pt-9 pb-0">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 shadow-inner ring-1 ring-white/10">
             <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
@@ -203,23 +212,17 @@ export const AuthLayout = () => {
           </span>
         </div>
 
-        {/* ── Center: phone + tagline ────────────────────────── */}
+        {/* Center: phone + tagline */}
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-7 px-8">
-          {/* Glowing halo behind the phone */}
           <div
             className="pointer-events-none absolute"
             style={{
-              width: 340,
-              height: 340,
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle, rgba(37,211,102,0.18) 0%, transparent 70%)",
+              width: 340, height: 340, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(37,211,102,0.18) 0%, transparent 70%)",
               filter: "blur(24px)",
             }}
           />
-
           <PhoneMockup />
-
           <div className="text-center">
             <h2 className="font-display text-[22px] font-semibold tracking-tight text-white">
               Chat, connect, collaborate.
@@ -230,7 +233,7 @@ export const AuthLayout = () => {
           </div>
         </div>
 
-        {/* ── Features strip ────────────────────────────────── */}
+        {/* Features strip */}
         <div className="relative z-10 flex flex-col gap-4 border-t border-white/10 px-9 py-7">
           {FEATURES.map((f) => (
             <div key={f.label} className="flex items-start gap-3">
@@ -249,7 +252,27 @@ export const AuthLayout = () => {
       {/* ════════════════════════════════════════════════════
           RIGHT PANEL  (form via Outlet)
       ════════════════════════════════════════════════════ */}
-      <div className="flex items-center justify-center px-6 py-12 sm:px-10">
+      <div className="relative flex items-center justify-center px-6 py-12 sm:px-10">
+
+        {/* ── Theme toggle ──────────────────────────────────── */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          className="
+            absolute right-5 top-5
+            flex h-9 w-9 items-center justify-center
+            rounded-full border border-base-300
+            bg-base-200 text-base-content/50
+            shadow-sm
+            hover:border-primary/40 hover:bg-primary/10 hover:text-primary
+            transition-all duration-200
+          "
+        >
+          {isDark ? <IconSun /> : <IconMoon />}
+        </button>
+
+        {/* Form content */}
         <div className="w-full max-w-sm">
           {/* Mobile-only brand */}
           <Link
