@@ -106,6 +106,39 @@ h1, h2, h3, h4 {
   background: color-mix(in oklch, var(--color-base-content) 32%, transparent);
 }
 
+/* ── Auth left panel ─────────────────────────────────────────── */
+.auth-left-bg {
+  background:
+    radial-gradient(ellipse at 8% 6%,  rgba(255,255,255,0.09) 0%, transparent 42%),
+    radial-gradient(ellipse at 92% 94%, rgba(37,211,102,0.14) 0%, transparent 48%),
+    linear-gradient(158deg, #054d43 0%, #075E54 40%, #0f7a6b 72%, #128C7E 100%);
+}
+
+/* Dot-grid texture overlay */
+.auth-left-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.065) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle corner blob decoration */
+.auth-left-bg::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,211,102,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ── Sidebar header gradient + dot-grid texture (signature) ─── */
 .sidebar-header-bg {
   position: relative;
@@ -154,6 +187,12 @@ h1, h2, h3, h4 {
 @keyframes toast-progress {
   from { width: 100%; }
   to   { width: 0%; }
+}
+
+/* ── Auth page: chat bubble pop-in ───────────────────────────── */
+@keyframes auth-bubble-in {
+  from { transform: translateY(10px) scale(0.94); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
 }
 
 /* ── Avatar pulse ring ───────────────────────────────────────── */

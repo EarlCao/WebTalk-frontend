@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { FormField } from "../../components/common/FormField";
 import { useAuth } from "../../hooks/useAuth";
+import { useToast } from "../../hooks/useToast";
 
 const USERNAME_PATTERN = /^[a-zA-Z0-9_.-]+$/;
 
@@ -12,10 +13,6 @@ interface FieldErrors {
   password?: string;
 }
 
-/**
- * Mirrors the backend's RegisterSchema so users get instant feedback
- * before the request round-trips to the API.
- */
 const validate = (username: string, email: string, password: string): FieldErrors => {
   const errors: FieldErrors = {};
 
@@ -38,33 +35,34 @@ const validate = (username: string, email: string, password: string): FieldError
 
 export const RegisterPage = () => {
   const { register } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setFormError(null);
 
     const errors = validate(username, email, password);
     setFieldErrors(errors);
-
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+    if (Object.keys(errors).length > 0) return;
 
     setIsSubmitting(true);
 
     try {
       await register({ username, email, password });
+      toast.success(`Account created! Welcome, ${username} 🎉`, 5000);
       navigate("/", { replace: true });
     } catch (caughtError) {
-      setFormError(caughtError instanceof Error ? caughtError.message : "Unable to create your account.");
+      toast.error(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Unable to create your account. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -110,12 +108,6 @@ export const RegisterPage = () => {
           error={fieldErrors.password}
           required
         />
-
-        {formError && (
-          <div role="alert" className="alert alert-error alert-soft text-sm">
-            <span>{formError}</span>
-          </div>
-        )}
 
         <button type="submit" className="btn btn-primary mt-2" disabled={isSubmitting}>
           {isSubmitting && <span className="loading loading-spinner loading-sm" />}

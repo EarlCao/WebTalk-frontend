@@ -2,17 +2,18 @@ import { useState } from "react";
 
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
+import { useToast } from "../../hooks/useToast";
 
 /* ── Mock conversations (Phase 4 will replace with real API) ── */
 const MOCK_CONVERSATIONS = [
-  { id: 1,  name: "Alex Chen",       initials: "AC", lastMsg: "Hey! Are you free tomorrow?",        time: "10:42",    unread: 3,  online: true,  typing: false, isGroup: false },
-  { id: 2,  name: "Maria Santos",    initials: "MS", lastMsg: "The files have been sent ✓✓",         time: "9:15",     unread: 0,  online: true,  typing: true,  isGroup: false },
+  { id: 1,  name: "Alex Chen",       initials: "AC", lastMsg: "Hey! Are you free tomorrow?",        time: "10:42",     unread: 3,  online: true,  typing: false, isGroup: false },
+  { id: 2,  name: "Maria Santos",    initials: "MS", lastMsg: "The files have been sent ✓✓",         time: "9:15",      unread: 0,  online: true,  typing: true,  isGroup: false },
   { id: 3,  name: "Dev Team 🚀",     initials: "DT", lastMsg: "Build passed! Deploying now...",      time: "Yesterday", unread: 12, online: false, typing: false, isGroup: true  },
   { id: 4,  name: "Jordan Lee",      initials: "JL", lastMsg: "Thanks for the help! 🙏",             time: "Yesterday", unread: 0,  online: false, typing: false, isGroup: false },
-  { id: 5,  name: "Priya Nair",      initials: "PN", lastMsg: "Can we reschedule the call?",        time: "Mon",      unread: 1,  online: true,  typing: false, isGroup: false },
-  { id: 6,  name: "Product Updates", initials: "PU", lastMsg: "v2.4.1 is now live 🎉",              time: "Sun",      unread: 0,  online: false, typing: false, isGroup: true  },
-  { id: 7,  name: "Sam Rivera",      initials: "SR", lastMsg: "On my way! 🚗",                       time: "Sat",      unread: 0,  online: false, typing: false, isGroup: false },
-  { id: 8,  name: "Leah Kim",        initials: "LK", lastMsg: "Did you see the latest update?",     time: "Fri",      unread: 0,  online: true,  typing: false, isGroup: false },
+  { id: 5,  name: "Priya Nair",      initials: "PN", lastMsg: "Can we reschedule the call?",         time: "Mon",       unread: 1,  online: true,  typing: false, isGroup: false },
+  { id: 6,  name: "Product Updates", initials: "PU", lastMsg: "v2.4.1 is now live 🎉",               time: "Sun",       unread: 0,  online: false, typing: false, isGroup: true  },
+  { id: 7,  name: "Sam Rivera",      initials: "SR", lastMsg: "On my way! 🚗",                        time: "Sat",       unread: 0,  online: false, typing: false, isGroup: false },
+  { id: 8,  name: "Leah Kim",        initials: "LK", lastMsg: "Did you see the latest update?",      time: "Fri",       unread: 0,  online: true,  typing: false, isGroup: false },
 ];
 
 /* Avatar gradient palette — green family */
@@ -62,7 +63,6 @@ const ConvAvatar = ({
         )}
       </div>
 
-      {/* Online indicator — only for direct messages */}
       {!isGroup && online !== undefined && (
         <span
           className={`absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full border-2 border-base-100 ${online ? "bg-success" : "bg-base-300"}`}
@@ -108,6 +108,11 @@ const IconMenu = () => (
     <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
   </svg>
 );
+const IconSignOut = () => (
+  <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.1">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+  </svg>
+);
 const IconEmptyChat = () => (
   <svg width="44" height="44" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.2" className="text-base-content/20">
     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
@@ -118,10 +123,26 @@ const IconEmptyChat = () => (
 export const Sidebar = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { toast } = useToast();
 
-  const [filter, setFilter] = useState<FilterTab>("all");
+  const [filter, setFilter]   = useState<FilterTab>("all");
   const [search, setSearch]   = useState("");
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      // Toast persists across the route redirect because ToastContainer
+      // lives above the router in the tree (mounted in main.tsx).
+      toast.info("You've been signed out. See you soon! 👋");
+    } catch {
+      toast.error("Sign out failed — please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const totalUnread = MOCK_CONVERSATIONS.reduce((n, c) => n + (c.unread > 0 ? 1 : 0), 0);
 
@@ -142,7 +163,6 @@ export const Sidebar = () => {
       <div className="sidebar-header-bg relative flex items-center gap-3 px-4 py-3.5 shrink-0">
         {/* User avatar with pulse ring */}
         <div className="relative flex-shrink-0 cursor-pointer group">
-          {/* Pulse ring */}
           <span
             className="absolute inset-0 rounded-full ring-2 ring-white/50 opacity-0 group-hover:opacity-100"
             style={{ animation: "avatar-ring-pulse 2s ease-in-out infinite" }}
@@ -201,9 +221,11 @@ export const Sidebar = () => {
               <li>
                 <button
                   type="button"
-                  onClick={() => void logout()}
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
                   className="text-sm text-error hover:bg-error/10 rounded-md"
                 >
+                  {isLoggingOut && <span className="loading loading-spinner loading-xs" />}
                   Sign out
                 </button>
               </li>
@@ -293,7 +315,6 @@ export const Sidebar = () => {
               />
 
               <div className="min-w-0 flex-1">
-                {/* Name + time row */}
                 <div className="flex items-baseline justify-between gap-2">
                   <span
                     className={`truncate text-sm font-semibold ${
@@ -311,7 +332,6 @@ export const Sidebar = () => {
                   </span>
                 </div>
 
-                {/* Last message + badge row */}
                 <div className="mt-0.5 flex items-center justify-between gap-2">
                   {conv.typing ? (
                     <span className="flex items-center gap-1.5 text-xs font-medium text-primary">
@@ -336,14 +356,19 @@ export const Sidebar = () => {
         )}
       </div>
 
-      {/* ── Footer: user info ──────────────────────────────── */}
+      {/* ── Footer ─────────────────────────────────────────── */}
       <div className="flex items-center gap-2.5 border-t border-base-300/60 bg-base-200/60 px-4 py-2.5 shrink-0">
+        {/* Avatar */}
         <div className="h-7 w-7 flex-shrink-0 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold select-none">
           {userInitials}
         </div>
+
+        {/* Username */}
         <span className="flex-1 truncate text-xs font-medium text-base-content/60">
           {user?.username}
         </span>
+
+        {/* Online badge */}
         <span className="flex items-center gap-1 text-[10px] text-success font-medium">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
@@ -351,6 +376,25 @@ export const Sidebar = () => {
           </span>
           Online
         </span>
+
+        {/* ── Logout button ─────────────────────────────── */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          title="Sign out"
+          className="
+            ml-1 flex h-7 w-7 flex-shrink-0 items-center justify-center
+            rounded-full text-base-content/35
+            hover:bg-error/10 hover:text-error
+            transition-colors disabled:opacity-50
+          "
+        >
+          {isLoggingOut
+            ? <span className="loading loading-spinner loading-xs" />
+            : <IconSignOut />
+          }
+        </button>
       </div>
     </aside>
   );
