@@ -1,38 +1,72 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: webtalk --default;
+  themes: webtalk-light --default, webtalk-dark;
 }
 
+/* ── Light theme: WhatsApp green ────────────────────────────── */
 @plugin "daisyui/theme" {
-  name: "webtalk";
+  name: "webtalk-light";
   default: true;
+  color-scheme: light;
+
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(95.5% 0.006 213);
+  --color-base-300: oklch(91.5% 0.009 210);
+  --color-base-content: oklch(14.7% 0.017 220);
+
+  --color-primary: oklch(71.2% 0.2 150.3);        /* #25D366 */
+  --color-primary-content: oklch(100% 0 0);
+
+  --color-secondary: oklch(52.8% 0.097 182.9);     /* #128C7E */
+  --color-secondary-content: oklch(100% 0 0);
+
+  --color-accent: oklch(35.7% 0.087 183.1);        /* #075E54 */
+  --color-accent-content: oklch(100% 0 0);
+
+  --color-neutral: oklch(87% 0.01 215);
+  --color-neutral-content: oklch(28% 0.02 215);
+
+  --color-info: oklch(70% 0.13 230);
+  --color-success: oklch(71.2% 0.2 150.3);
+  --color-warning: oklch(82% 0.16 70);
+  --color-error: oklch(62% 0.22 25);
+
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-selector: 0.375rem;
+}
+
+/* ── Dark theme: WhatsApp dark mode ─────────────────────────── */
+@plugin "daisyui/theme" {
+  name: "webtalk-dark";
+  default: false;
   color-scheme: dark;
 
-  --color-base-100: oklch(16% 0.014 260);
-  --color-base-200: oklch(20% 0.016 260);
-  --color-base-300: oklch(25% 0.018 260);
-  --color-base-content: oklch(94% 0.01 90);
+  --color-base-100: oklch(14.7% 0.017 220);        /* #111B21 */
+  --color-base-200: oklch(18.8% 0.016 215);        /* #202C33 */
+  --color-base-300: oklch(22.7% 0.018 213);        /* #2A3942 */
+  --color-base-content: oklch(92.8% 0.007 210);    /* #E9EDEF */
 
-  --color-primary: oklch(68% 0.19 35);
-  --color-primary-content: oklch(98% 0.01 35);
+  --color-primary: oklch(64.1% 0.155 169.7);       /* #00A884 */
+  --color-primary-content: oklch(100% 0 0);
 
-  --color-secondary: oklch(80% 0.13 175);
-  --color-secondary-content: oklch(18% 0.03 175);
+  --color-secondary: oklch(52.8% 0.097 182.9);
+  --color-secondary-content: oklch(100% 0 0);
 
-  --color-accent: oklch(85% 0.14 95);
-  --color-accent-content: oklch(20% 0.03 95);
+  --color-accent: oklch(71.2% 0.2 150.3);
+  --color-accent-content: oklch(14.7% 0.017 220);
 
-  --color-neutral: oklch(25% 0.018 260);
-  --color-neutral-content: oklch(90% 0.01 90);
+  --color-neutral: oklch(22.7% 0.018 213);
+  --color-neutral-content: oklch(90% 0.01 210);
 
-  --color-info: oklch(75% 0.12 230);
-  --color-success: oklch(78% 0.14 165);
-  --color-warning: oklch(82% 0.15 85);
-  --color-error: oklch(70% 0.18 25);
+  --color-info: oklch(70% 0.13 230);
+  --color-success: oklch(64.1% 0.155 169.7);
+  --color-warning: oklch(82% 0.16 70);
+  --color-error: oklch(62% 0.22 25);
 
-  --radius-box: 1rem;
-  --radius-field: 0.6rem;
-  --radius-selector: 0.5rem;
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-selector: 0.375rem;
 }
 
 @theme {
@@ -53,8 +87,77 @@ body {
 
 #root {
   min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
+}
+
+/* ── Thin scrollbars ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-base-content) 18%, transparent);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--color-base-content) 32%, transparent);
+}
+
+/* ── Sidebar header gradient + dot-grid texture (signature) ─── */
+.sidebar-header-bg {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 120%, rgba(255,255,255,0.07) 0%, transparent 50%),
+    linear-gradient(145deg, #075E54 0%, #128C7E 100%);
+}
+
+[data-theme="webtalk-dark"] .sidebar-header-bg {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04) 0%, transparent 55%),
+    linear-gradient(145deg, #1F2C34 0%, #2A3942 100%);
+}
+
+/* Dot-grid texture overlay */
+.sidebar-header-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px);
+  background-size: 18px 18px;
+  pointer-events: none;
+}
+
+/* ── Chat welcome panel background ───────────────────────────── */
+.chat-welcome-bg {
+  background-color: var(--color-base-100);
+  background-image:
+    radial-gradient(ellipse at 50% 40%, color-mix(in oklch, var(--color-primary) 6%, transparent) 0%, transparent 65%);
+}
+
+[data-theme="webtalk-dark"] .chat-welcome-bg {
+  background-color: var(--color-base-100);
+  background-image:
+    radial-gradient(ellipse at 50% 40%, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, transparent 65%);
+}
+
+/* ── Toast animations ────────────────────────────────────────── */
+@keyframes toast-slide-in {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+/* ── Avatar pulse ring ───────────────────────────────────────── */
+@keyframes avatar-ring-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.6; }
+  50%       { transform: scale(1.15); opacity: 0; }
 }
