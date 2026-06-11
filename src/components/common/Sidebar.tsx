@@ -173,9 +173,12 @@ export const Sidebar = () => {
         </div>
 
         {/* Brand */}
-        <span className="font-display text-[15px] font-semibold tracking-tight text-white flex-1 select-none">
-          web<span className="opacity-60">talk</span>
-        </span>
+        <div className="flex items-center gap-1.5 flex-1 select-none text-white">
+          <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />
+          <span className="font-display text-[15px] font-semibold tracking-tight">
+            web<span className="opacity-60">talk</span>
+          </span>
+        </div>
 
         {/* Action icons */}
         <div className="flex items-center gap-0.5">

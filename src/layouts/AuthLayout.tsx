@@ -202,10 +202,8 @@ export const AuthLayout = () => {
 
         {/* Brand */}
         <div className="relative z-10 flex items-center gap-2.5 px-9 pt-9 pb-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 shadow-inner ring-1 ring-white/10">
-            <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
-              <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-            </svg>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 shadow-inner ring-1 ring-white/10 overflow-hidden">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-display text-[20px] font-semibold tracking-tight text-white">
             web<span className="text-white/50">talk</span>
@@ -279,6 +277,9 @@ export const AuthLayout = () => {
             to="/"
             className="font-display mb-8 inline-flex items-center gap-2 text-xl font-semibold tracking-tight lg:hidden"
           >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+            </div>
             web<span className="text-primary">talk</span>
           </Link>
           <Outlet />
